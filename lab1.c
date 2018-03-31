@@ -1,1 +1,8 @@
-lab1.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(int argc, char **argv)
+{
+	printf("TESTEO INTENSO")
+}

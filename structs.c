@@ -2,7 +2,8 @@ typedef struct pix{
 	float R;
 	float G;
 	float B;
-	float Y;
+	float alpha;
+	int Y;
 	int binPixel;
 }pixel;
 typedef struct imgStruct{

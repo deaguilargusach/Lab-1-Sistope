@@ -51,16 +51,15 @@ pixel* pixelAbinario(pixel*pix, int umbral){
 //Descripción:
 //Entrada:
 //Salida:
-int clasificacion(imgStruct* img){
+int clasificacion(imgStruct* img, int umbral){
 	int i;
-	
 	long contadorPixelesBlancos = 0;
 	long contadorPixelesNegros = 0;
 	long cantidadPixeles = img->nPixeles;
 	for (i = 0; i < img->nPixeles ; i++)
 	{
-		if(img -> pixeles[i] -> binPixel == 1) contadorPixelesNegros++;
-		else if(img -> pixeles[i] -> binPixel == 0) contadorPixelesBlancos++;
+		if(img -> pixeles[i] -> binPixel == 0) contadorPixelesNegros++;
+		else if(img -> pixeles[i] -> binPixel == 1) contadorPixelesBlancos++;
 		else
 		{
  			printf("Error en la clasificacion\n");
@@ -71,7 +70,9 @@ int clasificacion(imgStruct* img){
 	}
 	printf("Proporcion Pixeles Negros : %ld de %ld. %f del total\n", contadorPixelesNegros, cantidadPixeles, (float)contadorPixelesNegros/(float)cantidadPixeles);
 	printf("Proporcion Pixeles Blancos : %ld de %ld. %f del total\n", contadorPixelesBlancos, cantidadPixeles, (float)contadorPixelesBlancos/(float)cantidadPixeles);
-	if(contadorPixelesNegros > contadorPixelesBlancos) return 1;
+	printf("primera: %f\n", (float)contadorPixelesNegros/(float)cantidadPixeles * 100);
+	printf("segunda: %d\n", umbral);
+	if((float)contadorPixelesNegros/(float)cantidadPixeles * 100 >= umbral) return 1;
 	else return 0;
 	return -2;
 }

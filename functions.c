@@ -3,7 +3,6 @@
 //Salida:
 unsigned char * leerImagen(int fileDescriptor, long fileSize)
 {
-	//char data[263000];//Se define el array de characters donde se almacenan los pixeles de la imagen leída
 	unsigned char * data = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
 	//File descriptor sirve como puntero de la función read para leer desde el búffer donde open almacena la información de los pixeles
 	int numberOfBytes = read(fileDescriptor, data, fileSize);//Número de bytes. Función guarda datos en data.
@@ -19,9 +18,7 @@ int abrirImagen(char * path)
 //Entrada:
 //Salida:
 pixel* escalaGrises(pixel* pix){
-	pix->B=pix->R*0.3+pix->G*0.59+pix->B*0.11;// ARREGLAR CON VARIABLES AUXILIARES !!!
-	pix->G=pix->R*0.3+pix->G*0.59+pix->B*0.11;
-	pix->R=pix->R*0.3+pix->G*0.59+pix->B*0.11;
+	pix->Y=pix->R*0.3+pix->G*0.59+pix->B*0.11;// ARREGLAR CON VARIABLES AUXILIARES !!!
 	return pix;
 }
 //Descripción:
@@ -51,6 +48,34 @@ pixel* pixelAbinario(pixel*pix, int umbral){
 	}
 	return pix;
 }
+//Descripción:
+//Entrada:
+//Salida:
+int clasificacion(imgStruct* img){
+	int i;
+	
+	long contadorPixelesBlancos = 0;
+	long contadorPixelesNegros = 0;
+	long cantidadPixeles = img->nPixeles;
+	for (i = 0; i < img->nPixeles ; i++)
+	{
+		if(img -> pixeles[i] -> binPixel == 1) contadorPixelesNegros++;
+		else if(img -> pixeles[i] -> binPixel == 0) contadorPixelesBlancos++;
+		else
+		{
+ 			printf("Error en la clasificacion\n");
+			printf("Error ocurrido en el pixel n°: %d\n", i);
+			printf("Valor del pixel: %d\n", img -> pixeles[i]->binPixel);
+			return -1;
+		}
+	}
+	printf("Proporcion Pixeles Negros : %ld de %ld. %f del total\n", contadorPixelesNegros, cantidadPixeles, (float)contadorPixelesNegros/(float)cantidadPixeles);
+	printf("Proporcion Pixeles Blancos : %ld de %ld. %f del total\n", contadorPixelesBlancos, cantidadPixeles, (float)contadorPixelesBlancos/(float)cantidadPixeles);
+	if(contadorPixelesNegros > contadorPixelesBlancos) return 1;
+	else return 0;
+	return -2;
+}
+
 //Descripción:
 //Entrada:
 //Salida:

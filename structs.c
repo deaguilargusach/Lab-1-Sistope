@@ -3,7 +3,7 @@ typedef struct pix{
 	int G;
 	int B;
 }pixel;
-typedef struct img{
+typedef struct imgStruct{
 	int nPixeles;
 	pixel** pixeles;
-}imagen;
+}imgStruct;

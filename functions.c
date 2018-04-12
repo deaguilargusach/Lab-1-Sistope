@@ -1,15 +1,19 @@
 //Descripción:
 //Entrada:
 //Salida:
-char * leerImagen(char * path)
+unsigned char * leerImagen(int fileDescriptor, long fileSize)
 {
 	//char data[263000];//Se define el array de characters donde se almacenan los pixeles de la imagen leída
-	char * data = (char*)malloc(sizeof(char)*263000);
-	int fileDescriptor = open(path, O_RDONLY);//File descriptor sirve como puntero de la función read para leer desde el búffer donde open almacena la información de los pixeles
-	int numberOfBytes = read(fileDescriptor, data, 262300);//Número de bytes. Función guarda datos en data.
+	unsigned char * data = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
+	//File descriptor sirve como puntero de la función read para leer desde el búffer donde open almacena la información de los pixeles
+	int numberOfBytes = read(fileDescriptor, data, fileSize);//Número de bytes. Función guarda datos en data.
 	return data;
 }
-
+int abrirImagen(char * path)
+{
+	int fileDescriptor = open(path, O_RDONLY);
+	return fileDescriptor;
+}
 
 //Descripción:
 //Entrada:
@@ -23,7 +27,7 @@ pixel* escalaGrises(pixel* pix){
 //Descripción:
 //Entrada:
 //Salida:
-imagen* imagenAGrises(imagen* img){
+imgStruct* imagenAGrises(imgStruct* img){
 	int n=img->nPixeles;
 	int i;
 	for (i = 0; i <n ; i=i+1){
@@ -50,7 +54,7 @@ pixel* pixelAbinario(pixel*pix, int umbral){
 //Descripción:
 //Entrada:
 //Salida:
-imagen* imagenAbinario(imagen* img, int umbral){
+imgStruct* imagenAbinario(imgStruct* img, int umbral){
 	int n;
 	n=img->nPixeles;
 	int i;

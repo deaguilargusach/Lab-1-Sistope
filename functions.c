@@ -13,6 +13,11 @@ int abrirImagen(char * path)
 	int fileDescriptor = open(path, O_RDONLY);
 	return fileDescriptor;
 }
+int crearSalida(char* path){
+
+	int fileDescriptor= open(path, O_WRONLY);
+	return fileDescriptor;
+}
 
 //Descripción:
 //Entrada:
@@ -37,9 +42,9 @@ imgStruct* imagenAGrises(imgStruct* img){
 //Salida:
 pixel* pixelAbinario(pixel*pix, int umbral){
 	if (pix->B>umbral){
-		pix->B=1;
-		pix->G=1;
-		pix->R=1;
+		pix->B=255;
+		pix->G=255;
+		pix->R=255;
 	}
 	else{
 		pix->B=0;

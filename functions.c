@@ -15,8 +15,13 @@ int abrirImagen(char * path)
 }
 int crearSalida(char* path){
 
-	int fileDescriptor= open(path, O_WRONLY);
+	int fileDescriptor = open(path, O_CREAT|O_WRONLY, S_IRWXU);;
 	return fileDescriptor;
+}
+int escribirSalida(imgStruct imagen, int fileDescriptor ){
+
+
+return 0;
 }
 
 //Descripción:

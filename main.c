@@ -114,8 +114,18 @@ void main (int argc, char **argv)
 		}
 		else
 		{
-			write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
-			printf("Soy el padre...\n");
+			//En esta sección el padre envía datos a cada hijo
+			//write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);// PRUEBA DE QUE FUNCIONA
+			write(pipefd[1], path, 12);//Envío del path de imagen al hijo
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//MATI, AQUI TENEMOS QUE LOGRAR PASAR ESTOS CUATRO PARÁMETROS EN FORMA DE STRING Y CON TAMAÑO DINÁMICO, ES DECIR
+			// 1 BYTE SI ES UN PURO NÚMERO, 2 SI SON 2 Y ASÍ
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			//write(pipefd[1], umbralClasificacion, 3);
+			//write(pipefd[1], umbralBinarizacion, 3);
+			//write(pipefd[1], flagMuestreo, 1);
 		}
 		printf("Salida !\n");
 		//////////////////////////////

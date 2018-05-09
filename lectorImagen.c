@@ -14,14 +14,6 @@
 
 int main (int argc, char **argv)
 {	
-	printf("PRUEBA 1");
-	char buffer[100];
-	read(STDIN_FILENO, buffer, 100);
-	printf("Hijo: %s\n", buffer);
-	//write(STDOUT_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
-	printf("holi, funcioné !");
-	return 0;
-	//PROCESAMIENTO//
 	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
 	char path[30];
@@ -32,6 +24,23 @@ int main (int argc, char **argv)
 	int offset;
 	imgStruct *imagen = (imgStruct*)malloc(sizeof(imgStruct));
 
+
+	//PIPE SECTION//
+	char buffer[100];
+	read(STDIN_FILENO, buffer, 12);//Lectura del path
+	printf("Path: %s\n", buffer);
+	strcpy(path, buffer);
+	read(STDIN_FILENO, buffer, 4);
+	printf("UClasificacion: %s\n", buffer);
+	read(STDIN_FILENO, buffer, 4);
+	printf("UBinarizacion: %s\n", buffer);
+	read(STDIN_FILENO, buffer, 1);
+	printf("Flag: %s\n", buffer);
+
+	//write(STDOUT_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
+
+
+	//PROCESAMIENTO//
 	fileSize = 500;//Se leen los primeros 500 carácteres(número arbitrario) para obtener de la data, el ancho, el largo y el tamaño del header
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//leerImagen devuelve un puntero a un array de unsigned char con los bytes de datos obtenidos de la imagen.
@@ -49,6 +58,8 @@ int main (int argc, char **argv)
 	img = leerImagen(file, fileSize);//Se relee la imagen con el tamaño del archivo definido.
 	printf("Tamano del archivo: %ld\n", fileSize);
 	printf("inicio pipeline\n");
-	//PROCESAMIENTO//
 
+	//PIPE SECTION//
+
+	return 0;
 }

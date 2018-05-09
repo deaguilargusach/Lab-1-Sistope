@@ -1,3 +1,8 @@
-gcc -std=gnu99 -o dupexample2 dupexample2.c
-gcc -std=gnu99 -o hijo hijo.c
+<h1> Para compilar y corre el programa ejecutar estos comandos </h1>
+
+gcc -std=gnu99 -o main main.c
+gcc -std=gnu99 -o lectorImagen lectorImagen.c
+gcc -std=gnu99 -o grisBinarizacion grisBinarizacion.c
+gcc -std=gnu99 -o analisis analisis.c
+gcc -std=gnu99 -o escritor escritor.c
 ./dupexample2

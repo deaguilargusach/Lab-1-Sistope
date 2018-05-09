@@ -18,12 +18,16 @@ int crearSalida(char* path){
 	int fileDescriptor = open(path, O_CREAT|O_WRONLY, S_IRWXU);;
 	return fileDescriptor;
 }
-int escribirSalida(imgStruct imagen, int fileDescriptor ){
+int escribirEnPipe(){
 
 
 return 0;
 }
+int leerDePipe(){
 
+
+return 0;
+}
 //Descripción:
 //Entrada:
 //Salida:

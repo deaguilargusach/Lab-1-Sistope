@@ -114,7 +114,7 @@ void main (int argc, char **argv)
 		}
 		else
 		{
-			write(STDIN_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
+			write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
 			printf("Soy el padre...\n");
 		}
 		printf("Salida !\n");

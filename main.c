@@ -24,7 +24,7 @@ void main (int argc, char **argv)
 
   opterr = 0;
 
-  while ((argument = getopt (argc, argv, "c:u:n:b:")) != -1)
+  while ((argument = getopt (argc, argv, "c:u:n:b")) != -1)
     switch (argument)
       {
       case 'c':
@@ -52,12 +52,12 @@ void main (int argc, char **argv)
           fprintf (stderr, "Option -%c requires an argument.\n", optopt);
         else if (isprint (optopt)&&optopt!='b')
           fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-        else
+        
+        else if(optopt != 'b'){
           fprintf (stderr,
                    "Unknown option character `\\x%x'.\n",
                    optopt);
-      default:
-        abort ();
+        }
       }
 
   printf ("Cantidad de imagenes = %d\nUmbral de binarizacion = %d\nUmbral de clasificacion = %d\nBandera de muestreo = %d\n",

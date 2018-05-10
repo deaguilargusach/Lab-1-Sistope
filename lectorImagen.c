@@ -37,9 +37,9 @@ int main (int argc, char **argv)
 	char buffer3[100];
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer, aux2[0]);//Lectura del path
-	printf("Path: %s\n", buffer);
 	strcpy(path, buffer);
 	path[aux2[0]]='\0';
+	printf("Path: %s\n", path);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer1, aux2[0]);
 	strcpy(UCla, buffer1);

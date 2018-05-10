@@ -17,10 +17,13 @@ void main (int argc, char **argv)
   char *cvalue = NULL;
   int index;
   int argument;
-  int cantidadImagenes;
-  int umbralBinarizacion;
-  int umbralClasificacion;
-  int flagMuestreo;
+  char* cantidadImagenes=(char*)malloc(sizeof(char)*15);
+  char* umbralBinarizacion=(char*)malloc(sizeof(char)*15);
+  char* umbralClasificacion=(char*)malloc(sizeof(char)*15);
+  char* flagMuestreo=(char*)malloc(sizeof(char)*2);
+  int* tamaniocosas=(int*)malloc(sizeof(int));
+  flagMuestreo[0]='0';
+  flagMuestreo[1]='\0';
 
   opterr = 0;
 
@@ -28,19 +31,21 @@ void main (int argc, char **argv)
     switch (argument)
       {
       case 'c':
-        cantidadImagenes = atoi(optarg);
+      		sscanf(optarg,"%s",cantidadImagenes);
+//        cantidadImagenes = atoi(optarg);
         break;
 
       case 'u':
-        umbralBinarizacion = atoi(optarg);
+      		sscanf(optarg,"%s",umbralBinarizacion);
+//        umbralBinarizacion = atoi(optarg);
         break;
 
       case 'n':
-        umbralClasificacion = atoi(optarg);
+      		sscanf(optarg,"%s",umbralClasificacion);
+//        umbralClasificacion = atoi(optarg);
         break;
-
       case 'b':
-        flagMuestreo = 1;
+        flagMuestreo[0] = '1';
         break;
 
       case '?':
@@ -60,7 +65,7 @@ void main (int argc, char **argv)
         }
       }
 
-  printf ("Cantidad de imagenes = %d\nUmbral de binarizacion = %d\nUmbral de clasificacion = %d\nBandera de muestreo = %d\n",
+  printf ("Cantidad de imagenes = %s\nUmbral de binarizacion = %s\nUmbral de clasificacion = %s\nBandera de muestreo = %s\n",
           cantidadImagenes, umbralBinarizacion, umbralClasificacion, flagMuestreo);
 
   for (index = optind; index < argc; index++)
@@ -87,7 +92,7 @@ void main (int argc, char **argv)
 
 	//FIN DECLARACIÓN DE VARIABLES//
 	//inicio de bucle de ejecucion para las n imagenes {
-	while(aux <= cantidadImagenes){
+	while(aux <= atoi(cantidadImagenes)){
 		cantidadPixeles=0;
 		path[7]='\0';
 		bm[5]='\0';
@@ -116,16 +121,21 @@ void main (int argc, char **argv)
 		{
 			//En esta sección el padre envía datos a cada hijo
 			//write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);// PRUEBA DE QUE FUNCIONA
-			write(pipefd[1], path, 12);//Envío del path de imagen al hijo
+			tamaniocosas[0]=strlen(path);
+			write(pipefd[1],tamaniocosas,1);
+			write(pipefd[1], path, tamaniocosas[0]);//Envío del path de imagen al hijo
 
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//MATI, AQUI TENEMOS QUE LOGRAR PASAR ESTOS CUATRO PARÁMETROS EN FORMA DE STRING Y CON TAMAÑO DINÁMICO, ES DECIR
 			// 1 BYTE SI ES UN PURO NÚMERO, 2 SI SON 2 Y ASÍ
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-			//write(pipefd[1], umbralClasificacion, 3);
-			//write(pipefd[1], umbralBinarizacion, 3);
-			//write(pipefd[1], flagMuestreo, 1);
+			tamaniocosas[0]=strlen(umbralClasificacion);
+			write(pipefd[1],tamaniocosas,1);
+			write(pipefd[1], umbralClasificacion, strlen(umbralClasificacion));
+			tamaniocosas[0]=strlen(umbralBinarizacion);
+			write(pipefd[1],tamaniocosas,1);
+			write(pipefd[1], umbralBinarizacion, strlen(umbralBinarizacion));
+			write(pipefd[1], flagMuestreo, 2);
 		}
 		printf("Salida !\n");
 		//////////////////////////////

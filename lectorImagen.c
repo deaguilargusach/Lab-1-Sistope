@@ -17,30 +17,49 @@ int main (int argc, char **argv)
 	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
 	char path[30];
+	char ubin[30];
+	char UCla[30];
+	char muestreo[2];
 	unsigned char *img;
 	int imgWidth;
 	int imgHeight;
 	int headerSize;
 	int offset;
+	int aux;
 	imgStruct *imagen = (imgStruct*)malloc(sizeof(imgStruct));
 
 
 	//PIPE SECTION//
+	int* aux2=(int*)malloc(sizeof(int));
 	char buffer[100];
-	read(STDIN_FILENO, buffer, 12);//Lectura del path
+	char buffer1[100];
+	char buffer2[100];
+	char buffer3[100];
+	read(STDIN_FILENO,aux2,1);
+	read(STDIN_FILENO, buffer, aux2[0]);//Lectura del path
 	printf("Path: %s\n", buffer);
 	strcpy(path, buffer);
-	read(STDIN_FILENO, buffer, 4);
-	printf("UClasificacion: %s\n", buffer);
-	read(STDIN_FILENO, buffer, 4);
-	printf("UBinarizacion: %s\n", buffer);
-	read(STDIN_FILENO, buffer, 1);
-	printf("Flag: %s\n", buffer);
+	path[aux2[0]]='\0';
+	read(STDIN_FILENO,aux2,1);
+	read(STDIN_FILENO, buffer1, aux2[0]);
+	strcpy(UCla, buffer1);
+	UCla[aux2[0]]='\0';
+	printf("UClasificacion: %s\n", UCla);
+	read(STDIN_FILENO,aux2,1);
+	read(STDIN_FILENO, buffer2, aux2[0]);
+	strcpy(ubin, buffer2);
+	ubin[aux2[0]]='\0';
+	printf("UBinarizacion: %s\n", ubin);
+	read(STDIN_FILENO, buffer3, 1);
+	strcpy(muestreo, buffer3);
+	muestreo[2]='\0';
+	printf("Flag: %s\n", muestreo);
 
 	//write(STDOUT_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
 
 
 	//PROCESAMIENTO//
+	path[12]='\0';
 	fileSize = 500;//Se leen los primeros 500 carácteres(número arbitrario) para obtener de la data, el ancho, el largo y el tamaño del header
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//leerImagen devuelve un puntero a un array de unsigned char con los bytes de datos obtenidos de la imagen.

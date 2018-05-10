@@ -100,10 +100,12 @@ void main (int argc, char **argv)
 		strcat(path, numero);
 		strcat(path, bm);
 		printf("%s\n",path );
-		//printf("patata\n");
 
+
+		////////////////////
+		//PIPE OUT SECTION//
+		////////////////////
 		int pipefd[2];
-		char buffer[100];
 		pipe(pipefd);
 		int pid;
 		aux ++;
@@ -112,7 +114,8 @@ void main (int argc, char **argv)
 		if(pid == 0)
 		{
 			printf("Soy el hijo...\n");
-			dup2(pipefd[0], STDIN_FILENO);//EL OUT DE ESTE PIPE SERÁ FD1
+			dup2(pipefd[0], STDIN_FILENO);//Se copia la sección de lectura del pipe a la constante STDIN_FILENO, de modo que el hijo pueda leer
+			close(pipefd[0])
 			execl("lectorImagen", "ls","-al", NULL);
 	        perror("exec ls failed\n");
 	        exit(EXIT_FAILURE);
@@ -124,11 +127,6 @@ void main (int argc, char **argv)
 			tamaniocosas[0]=strlen(path);
 			write(pipefd[1],tamaniocosas,1);
 			write(pipefd[1], path, tamaniocosas[0]);//Envío del path de imagen al hijo
-
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			//MATI, AQUI TENEMOS QUE LOGRAR PASAR ESTOS CUATRO PARÁMETROS EN FORMA DE STRING Y CON TAMAÑO DINÁMICO, ES DECIR
-			// 1 BYTE SI ES UN PURO NÚMERO, 2 SI SON 2 Y ASÍ
-			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			tamaniocosas[0]=strlen(umbralClasificacion);
 			write(pipefd[1],tamaniocosas,1);
 			write(pipefd[1], umbralClasificacion, strlen(umbralClasificacion));
@@ -137,21 +135,29 @@ void main (int argc, char **argv)
 			write(pipefd[1], umbralBinarizacion, strlen(umbralBinarizacion));
 			write(pipefd[1], flagMuestreo, 2);
 		}
-		printf("Salida !\n");
+		////////////////////////
+		//FIN PIPE OUT SECTION//
+		////////////////////////
+
+
 		//////////////////////////////
 		//PARTE 1: LECTOR DE IMAGEN.//
 		//////////////////////////////
 
 		//////////////////////////////////
-		//PARTE 2: CONVERSOR A GRIS+BIN.//
+		//PARTE 2: CONVERSOR A GRIS.//
+		//////////////////////////////////
+
+		//////////////////////////
+		//PARTE 3: BINARIZACIÓN.//
+		//////////////////////////
+
+		//////////////////////////////////
+		//PARTE 4: ANALISIS PROPIEDADES.//
 		//////////////////////////////////
 
 		//////////////////////////////////
-		//PARTE 3: ANALISIS PROPIEDADES.//
-		//////////////////////////////////
-
-		//////////////////////////////////
-		//PARTE 4: ESCRITURA RESULTADOS.//
+		//PARTE 5: ESCRITURA RESULTADOS.//
 		//////////////////////////////////
 
 	}

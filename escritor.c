@@ -14,6 +14,16 @@
 
 int main (int argc, char **argv)
 {	
+	///////////////////
+	//PIPE IN SECTION//
+	///////////////////
+	char buffer[100];//Buffer de paso por pipe
+	read(STDIN_FILENO, buffer, aux2[0]);//Lectura del archivo enviado por el padre
+	strcpy(path, buffer);//Copia del contenido del buffer a variable local para su tratamiento
+	///////////////////////
+	//FIN PIPE IN SECTION//
+	///////////////////////
+
 	path2[7]='\0';
 	bm[5]='\0';
 	sprintf(numero,"%d",aux);

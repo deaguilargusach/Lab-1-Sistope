@@ -29,7 +29,9 @@ int main (int argc, char **argv)
 	imgStruct *imagen = (imgStruct*)malloc(sizeof(imgStruct));
 
 
-	//PIPE SECTION//
+	///////////////////
+	//PIPE IN SECTION//
+	///////////////////
 	int* aux2=(int*)malloc(sizeof(int));
 	char buffer[100];
 	char buffer1[100];
@@ -47,15 +49,16 @@ int main (int argc, char **argv)
 	printf("UClasificacion: %s\n", UCla);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer2, aux2[0]);
-	strcpy(ubin, buffer2);
-	ubin[aux2[0]]='\0';
+	strcpy(uBin, buffer2);
+	uBin[aux2[0]]='\0';
 	printf("UBinarizacion: %s\n", ubin);
 	read(STDIN_FILENO, buffer3, 1);
 	strcpy(muestreo, buffer3);
 	muestreo[2]='\0';
 	printf("Flag: %s\n", muestreo);
-
-	//write(STDOUT_FILENO, "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);
+	///////////////////////
+	//FIN PIPE IN SECTION//
+	///////////////////////
 
 
 	//PROCESAMIENTO//
@@ -78,7 +81,30 @@ int main (int argc, char **argv)
 	printf("Tamano del archivo: %ld\n", fileSize);
 	printf("inicio pipeline\n");
 
-	//PIPE SECTION//
-
+	////////////////////
+	//PIPE OUT SECTION//
+	////////////////////
+	int pipefd[2];
+	pipe(pipefd);
+	int pid;
+	long fileSize;
+	printf("Creando hijo\n");
+	pid = fork();// CREANDO HIJO
+	if(pid == 0)
+	{
+		dup2(pipefd[0], STDIN_FILENO);//EL OUT DE ESTE PIPE SERÁ FD1
+		close(pipefd[0])
+		execl("lectorImagen", "ls","-al", NULL);
+        perror("exec ls failed\n");
+        exit(EXIT_FAILURE);
+	}
+	else
+	{
+		//En esta sección el padre envía datos a cada hijo
+		//write(pipefd[1], aux, size);//Se escriben en el pipe "size" bytes de la variable "aux"
+	}
+	////////////////////////
+	//FIN PIPE OUT SECTION//
+	////////////////////////
 	return 0;
 }

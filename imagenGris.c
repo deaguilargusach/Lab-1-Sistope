@@ -16,7 +16,6 @@ int main (int argc, char **argv)
 {	
 	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
-	char path[30];
 	char uBin[30];
 	char UCla[30];
 	char muestreo[2];
@@ -26,23 +25,26 @@ int main (int argc, char **argv)
 	int headerSize;
 	int offset;
 	int aux;
-	int status=0;
 	int * numero=(int*)malloc(sizeof(int));
+	imgStruct* imagen=(imgStruct*)malloc(sizeof(imgStruct));
+	
 
 
 	///////////////////
 	//PIPE IN SECTION//
 	///////////////////
 	int* aux2=(int*)malloc(sizeof(int));
-	char buffer[100];
 	char buffer1[100];
 	char buffer2[100];
 	char buffer3[100];
 	read(STDIN_FILENO,numero,1);
 	read(STDIN_FILENO,aux2,1);
-	read(STDIN_FILENO, buffer, aux2[0]);//Lectura del path
-	strcpy(path, buffer);
-	path[aux2[0]]='\0';
+	unsigned char buffer[aux2[0]];
+	fileSize=aux2[0];
+	img = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
+	read(STDIN_FILENO, buffer, aux2[0]);//Lectura de la imagen
+	strcpy(img, buffer);
+	printf("imagen: %s\n", img);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer1, aux2[0]);
 	strcpy(UCla, buffer1);
@@ -62,24 +64,20 @@ int main (int argc, char **argv)
 	///////////////////////
 
 
-	//PROCESAMIENTO//
-	path[12]='\0';
-	fileSize = 500;//Se leen los primeros 500 carácteres(número arbitrario) para obtener de la data, el ancho, el largo y el tamaño del header
-	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
-	img = leerImagen(file, fileSize);//leerImagen devuelve un puntero a un array de unsigned char con los bytes de datos obtenidos de la imagen.
+	//PROCESAMIENTO/
 	offset = img[10]*pow(256,0) + img[11]*pow(256,1) + img[12]*pow(256,2);
 	imgWidth = img[18]*pow(256,0) + img[19]*pow(256,1) + img[20]*pow(256,2) + img[21]*pow(256,3);//Los bytes 19, 20, 21 y 22 contienen el ancho de la imagen.
 	imgHeight = img[22]*pow(256,0) + img[23]*pow(256,1) + img[24]*pow(256,2) + img[25]*pow(256,3);//Los bytes 23, 24, 25 y 26 contienen el largo de la imagen.
 	headerSize = (int)img[2];//El tamaño del header esta escrito en el 3er byte de la data.
-	close(file);
-	fileSize = (imgWidth * imgHeight)*4 + headerSize;
-	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
-	img = leerImagen(file, fileSize);//Se relee la imagen con el tamaño del archivo definido.
-	printf("Tamano del archivo: %ld\n", fileSize);
+	imagen->pixeles = (pixel**)malloc(sizeof(pixel*)*imgWidth*imgHeight);
+	printf("Tamano del header: %d\n", headerSize);
+	printf("Ancho de la imagen: %d\n", imgWidth);
+	printf("Largo de la imagen: %d\n", imgHeight);
 
 	////////////////////
 	//PIPE OUT SECTION//
 	////////////////////
+	return 0;
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;
@@ -89,25 +87,14 @@ int main (int argc, char **argv)
 	{
 		dup2(pipefd[0], STDIN_FILENO);//EL OUT DE ESTE PIPE SERÁ FD1
 		close(pipefd[0]);
-		execl("imagenGris", "ls","-al", NULL);
+		execl("lectorImagen", "ls","-al", NULL);
         perror("exec ls failed\n");
         exit(EXIT_FAILURE);
 	}
 	else
 	{
 		//En esta sección el padre envía datos a cada hijo
-		write(pipefd[1],numero,1);
-		aux2[0]=fileSize;
-		write(pipefd[1], aux2, 1);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"
-		write(pipefd[1],img,fileSize);
-		aux2[0]=strlen(UCla);
-		write(pipefd[1],aux2,1);
-		write(pipefd[1], UCla, strlen(UCla));
-		aux2[0]=strlen(uBin);
-		write(pipefd[1],aux2,1);
-		write(pipefd[1], uBin, strlen(uBin));
-		write(pipefd[1], muestreo, 2);
-		waitpid(pid,&status,0);
+		//write(pipefd[1], aux, size);//Se escriben en el pipe "size" bytes de la variable "aux"
 	}
 	////////////////////////
 	//FIN PIPE OUT SECTION//

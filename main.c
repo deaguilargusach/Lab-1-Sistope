@@ -111,7 +111,7 @@ void main (int argc, char **argv)
 		{
 			printf("Soy el hijo...\n");
 			dup2(pipefd[0], STDIN_FILENO);//Se copia la sección de lectura del pipe a la constante STDIN_FILENO, de modo que el hijo pueda leer
-			close(pipefd[0])
+			close(pipefd[0]);
 			execl("lectorImagen", "ls","-al", NULL);
 	        perror("exec ls failed\n");
 	        exit(EXIT_FAILURE);
@@ -120,6 +120,8 @@ void main (int argc, char **argv)
 		{
 			//En esta sección el padre envía datos a cada hijo
 			//write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);// PRUEBA DE QUE FUNCIONA
+			tamaniocosas[0]=aux;
+			write(pipefd[1],tamaniocosas,1);
 			tamaniocosas[0]=strlen(path);
 			write(pipefd[1],tamaniocosas,1);
 			write(pipefd[1], path, tamaniocosas[0]);//Envío del path de imagen al hijo

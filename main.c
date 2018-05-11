@@ -100,11 +100,7 @@ void main (int argc, char **argv)
 		strcat(path, numero);
 		strcat(path, bm);
 		printf("%s\n",path );
-
-
-		////////////////////
-		//PIPE OUT SECTION//
-		////////////////////
+		int status;
 		int pipefd[2];
 		pipe(pipefd);
 		int pid;
@@ -133,13 +129,10 @@ void main (int argc, char **argv)
 			tamaniocosas[0]=strlen(umbralBinarizacion);
 			write(pipefd[1],tamaniocosas,1);
 			write(pipefd[1], umbralBinarizacion, strlen(umbralBinarizacion));
-			write(pipefd[1], flagMuestreo, 2);
+			write(pipefd[1], flagMuestreo, 1);
+			waitpid(pid,&status,0);
 		}
-		////////////////////////
-		//FIN PIPE OUT SECTION//
-		////////////////////////
-
-
+		
 		//////////////////////////////
 		//PARTE 1: LECTOR DE IMAGEN.//
 		//////////////////////////////

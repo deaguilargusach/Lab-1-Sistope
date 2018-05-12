@@ -37,13 +37,14 @@ int main (int argc, char **argv)
 	char buffer1[100];
 	char buffer2[100];
 	char buffer3[100];
-
 	printf("HIJO 2 STDIN: %d\n", STDIN_FILENO);
+	read(STDIN_FILENO, aux2, 4);
+	numero[0]=aux2[0];
 	read(STDIN_FILENO, aux2, 4);
 	fileSize=aux2[0];
 	printf("fileSize: %zu\n", fileSize);
-	unsigned char buffer[fileSize];
-	img = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
+	unsigned char* buffer=(unsigned char*)malloc(sizeof(unsigned char)*fileSize);
+	img = buffer;
 	read(STDIN_FILENO,aux2,4);
 	printf("aux2: ");
 	printf("%d\n",aux2[0] );
@@ -91,9 +92,41 @@ int main (int argc, char **argv)
 			R = img[i+2];// Pixel Rojo
 			alpha = img[i+3];
 			gris= R*0.3+G*0.59+B*0.11;//Conversion a escala de grises
+			img[i]=gris;// Pixel Azul
+			img[i+1]=gris;// Pixel Verde
+			img[i+2]=gris;
+
 			i = i + 3;
 
 		}
+// aqui empiesan el tumulto de weas que tuve que colocar para printear la imagen
+	int outfile;
+	char path2[30]= "salida_";
+	char bm[5]=".bmp";
+	unsigned char* escrito=(unsigned char*)malloc(sizeof(unsigned char));
+	path2[7]='\0';
+	bm[5]='\0';
+	sprintf(numero,"%d",aux);
+	printf("hola\n");
+	strcat( path2, numero );
+	strcat( path2, bm );
+	
+	printf("%s\n",path2 );
+	outfile=crearSalida(path2);
+
+	printf("fileSize: %zu\n", fileSize);
+	for ( i = 0; i < fileSize; i=i+1){	
+		escrito[0]=img[i];
+		write(outfile,escrito,sizeof(unsigned char));
+		
+	}
+	lseek(outfile,offset,SEEK_SET);
+	//for ( i = headerSize; i < fileSize; i=i+1){
+//			escrito[0]=img[i];
+//			write(outfile,escrito,sizeof(unsigned char));
+//		}
+	close(outfile);
+	// aqui termina el tumulto
 		printf("sali c:\n");
 	return 0;
 

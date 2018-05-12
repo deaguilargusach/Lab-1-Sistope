@@ -93,7 +93,6 @@ void main (int argc, char **argv)
 	//FIN DECLARACIÓN DE VARIABLES//
 	//inicio de bucle de ejecucion para las n imagenes {
 	while(aux <= atoi(cantidadImagenes)){
-		printf("VALOR DE UN INT%d \n", sizeof(size_t));
 		cantidadPixeles=0;
 		path[7]='\0';
 		bm[5]='\0';
@@ -138,7 +137,6 @@ void main (int argc, char **argv)
 			printf("PRRRRRRIMER PADRE !\n");
 			waitpid(pid,&status,0);
 		}
-		
 		//////////////////////////////
 		//PARTE 1: LECTOR DE IMAGEN.//
 		//////////////////////////////

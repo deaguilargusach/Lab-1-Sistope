@@ -102,6 +102,8 @@ int main (int argc, char **argv)
 	{
 		printf("pipefd's: 0: %d, 1: %d\n", pipefd[0], pipefd[1]);
 		//En esta sección el padre envía datos a cada hijo
+		aux2[0]=numero[0];
+		write(pipefd[1], aux2, 4);
 		printf("fileSize: %zu\n", fileSize);
 		aux2[0]=fileSize;
 		write(pipefd[1], aux2, 4);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"

@@ -14,7 +14,7 @@
 
 int main (int argc, char **argv)
 {	
-	size_t fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
+	int fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
 	char path[30];
 	char* uBin=(char*)malloc(sizeof(char)*15);
@@ -77,6 +77,8 @@ int main (int argc, char **argv)
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//Se relee la imagen con el tamaño del archivo definido.
 	printf("Tamano del archivo: %ld\n", fileSize);
+	printf("Ancho de la imagen: %d\n", imgWidth);
+	printf("Largo de la imagen: %d\n", imgHeight);
 	close(file);
 
 	////////////////////
@@ -91,6 +93,7 @@ int main (int argc, char **argv)
 	{
 		dup2(pipefd[0], STDIN_FILENO);//EL OUT DE ESTE PIPE SERÁ FD1
 		close(pipefd[0]);
+		printf("el hijo se creo\n");
 		execl("imagenGris", "ls","-al", NULL);
         perror("exec ls failed\n");
         exit(EXIT_FAILURE);
@@ -99,21 +102,20 @@ int main (int argc, char **argv)
 	{
 		printf("pipefd's: 0: %d, 1: %d\n", pipefd[0], pipefd[1]);
 		//En esta sección el padre envía datos a cada hijo
+		printf("fileSize: %zu\n", fileSize);
 		aux2[0]=fileSize;
-		write(pipefd[1], aux2, 2);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"
+		write(pipefd[1], aux2, 4);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"
 
 		aux2[0]=strlen(UCla);
-		write(pipefd[1],aux2,1);
+		write(pipefd[1],aux2,4);
 		printf("Pasando UCLA: %s\n", UCla);
 		write(pipefd[1], UCla, strlen(UCla));
 		aux2[0]=strlen(uBin);
-		write(pipefd[1],aux2,1);
+		write(pipefd[1],aux2,4);
 		printf("Pasando UBin: %s\n", uBin);
 		write(pipefd[1], uBin, strlen(uBin));
 
-		write(pipefd[1], muestreo, 1);
-		printf("hola\n");
-
+		write(pipefd[1], muestreo, 4);
 		write(pipefd[1], img, fileSize);
 		waitpid(pid,&status,0);
 	}

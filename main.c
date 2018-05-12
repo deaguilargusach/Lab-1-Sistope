@@ -14,35 +14,52 @@
 
 void main (int argc, char **argv)
 {
-  char *cvalue = NULL;
-  int index;
-  int argument;
-  char* cantidadImagenes=(char*)malloc(sizeof(char)*15);
-  char* umbralBinarizacion=(char*)malloc(sizeof(char)*15);
-  char* umbralClasificacion=(char*)malloc(sizeof(char)*15);
-  char* flagMuestreo=(char*)malloc(sizeof(char)*2);
-  int* tamaniocosas=(int*)malloc(sizeof(int));
-  flagMuestreo[0]='0';
-  flagMuestreo[1]='\0';
 
-  opterr = 0;
+	//////////////////////////////
+	//PARTE 1: LECTOR DE IMAGEN.//
+	//////////////////////////////
+
+	//////////////////////////////////////////
+	//PARTE 2: CONVERSOR A ESCALA DE GRISES.//
+	//////////////////////////////////////////
+
+	//////////////////////////
+	//PARTE 3: BINARIZACIÓN.//
+	//////////////////////////
+
+	//////////////////////////////////
+	//PARTE 4: ESCRITURA RESULTADOS.//
+	//////////////////////////////////
+
+	//////////////////////////////////
+	//PARTE 5: ANALISIS PROPIEDADES.//
+	//////////////////////////////////
+
+	int index;
+	int argument;
+	char* cantidadImagenes=(char*)malloc(sizeof(char)*15);
+	char* umbralBinarizacion=(char*)malloc(sizeof(char)*15);
+	char* umbralClasificacion=(char*)malloc(sizeof(char)*15);
+	char* flagMuestreo=(char*)malloc(sizeof(char)*2);
+	int* tamanioCosas=(int*)malloc(sizeof(int));
+	flagMuestreo[0]='0';
+	flagMuestreo[1]='\0';
+
+	opterr = 0;
 
   while ((argument = getopt (argc, argv, "c:u:n:b")) != -1)
     switch (argument)
       {
       case 'c':
       		sscanf(optarg,"%s",cantidadImagenes);
-//        cantidadImagenes = atoi(optarg);
         break;
 
       case 'u':
       		sscanf(optarg,"%s",umbralBinarizacion);
-//        umbralBinarizacion = atoi(optarg);
         break;
 
       case 'n':
       		sscanf(optarg,"%s",umbralClasificacion);
-//        umbralClasificacion = atoi(optarg);
         break;
       case 'b':
         flagMuestreo[0] = '1';
@@ -64,7 +81,11 @@ void main (int argc, char **argv)
                    optopt);
         }
       }
-
+  printf("\n\n\n##################################################################\n");
+  printf("##################################################################\n");
+  printf("############# CLASIFICADOR DE IMAGENES: MAIN #####################\n");
+  printf("##################################################################\n");
+  printf("##################################################################\n\n\n");
   printf ("Cantidad de imagenes = %s\nUmbral de binarizacion = %s\nUmbral de clasificacion = %s\nBandera de muestreo = %s\n",
           cantidadImagenes, umbralBinarizacion, umbralClasificacion, flagMuestreo);
 
@@ -75,12 +96,15 @@ void main (int argc, char **argv)
 /////////////////////FIN LECTURA DE PARÁMETROS///////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
+
+	////////////////////////////////
+	//EJECUCIÓN DEL PROCESO: MAIN //
+	////////////////////////////////
 	int outfile;
 	int clasificador;
 	int i;
 	int j=0;
 	int cantidadPixeles;
-
 	int aux=1;
 	char* numero=(char*)malloc(sizeof(char)*15);
 	char path[30]= "imagen_";
@@ -88,10 +112,8 @@ void main (int argc, char **argv)
 	char bm[5]=".bmp";
 	unsigned char* escrito=(char*)malloc(sizeof(char));
 
-
-
 	//FIN DECLARACIÓN DE VARIABLES//
-	//inicio de bucle de ejecucion para las n imagenes {
+	//inicio de bucle de ejecucion para las n imagenes
 	while(aux <= atoi(cantidadImagenes)){
 		cantidadPixeles=0;
 		path[7]='\0';
@@ -99,13 +121,21 @@ void main (int argc, char **argv)
 		sprintf(numero,"%d",aux);
 		strcat(path, numero);
 		strcat(path, bm);
-		printf("%s\n",path );
+		printf("Cargando imagen: %s\n",path );
 		int status;
+
+	////////////////////////////////////
+	//FIN EJECUCIÓN DEL PROCESO: MAIN //
+	////////////////////////////////////
+
+		////////////////////
+		//PIPE OUT SECTION//
+		////////////////////
+
 		int pipefd[2];
 		pipe(pipefd);
 		int pid;
-		aux ++;
-		printf("Creando hijo\n\n\n");
+		printf("Creando hijo...\n\n");
 		pid = fork();// CREANDO HIJO
 		if(pid == 0)
 		{
@@ -118,44 +148,37 @@ void main (int argc, char **argv)
 		else
 		{
 			//En esta sección el padre envía datos a cada hijo
-			//write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);// PRUEBA DE QUE FUNCIONA
-			printf("pipefd's: 0: %d, 1: %d\n", pipefd[0], pipefd[1]);
-			//close(pipefd[0]);
-			tamaniocosas[0]=aux;
-			write(pipefd[1],tamaniocosas,1);
-			tamaniocosas[0]=strlen(path);
-			write(pipefd[1],tamaniocosas,1);
-			write(pipefd[1], path, tamaniocosas[0]);//Envío del path de imagen al hijo
-			tamaniocosas[0]=strlen(umbralClasificacion);
-			write(pipefd[1],tamaniocosas,1);
-			write(pipefd[1], umbralClasificacion, strlen(umbralClasificacion));
-			tamaniocosas[0]=strlen(umbralBinarizacion);
-			write(pipefd[1],tamaniocosas,1);
-			write(pipefd[1], umbralBinarizacion, strlen(umbralBinarizacion));
-			write(pipefd[1], flagMuestreo, 1);
-			close(pipefd[1]);
-			printf("PRRRRRRIMER PADRE !\n");
+
+			//ESCRITURA DEL NUMERO DE IMAGEN
+			tamanioCosas[0]=aux;
+			write(pipefd[1],tamanioCosas,1);
+
+			//ESCRITURA DEL TAMAÑO DEL PATH
+			tamanioCosas[0]=strlen(path);
+			write(pipefd[1],tamanioCosas,1);
+
+			//ESCRITURA DEL PATH
+			write(pipefd[1], path, strlen(path));//Envío del path de imagen al hijo
+
+			//ESCRITURA DEL UMBRAL DE CLASIFICACIÓN
+			tamanioCosas[0]=atoi(umbralClasificacion);
+			write(pipefd[1], tamanioCosas, 1);
+
+			//ESCRITURA DEL UMBRAL DE BINARIZACION
+			tamanioCosas[0]=atoi(umbralBinarizacion);
+			write(pipefd[1], tamanioCosas, 2);
+
+			//ESCRITURA DEL FLAG
+			tamanioCosas[0]=atoi(flagMuestreo);
+			write(pipefd[1], tamanioCosas, 1);
+
 			waitpid(pid,&status,0);
 		}
-		//////////////////////////////
-		//PARTE 1: LECTOR DE IMAGEN.//
-		//////////////////////////////
+		aux ++;
 
-		//////////////////////////////////
-		//PARTE 2: CONVERSOR A GRIS.//
-		//////////////////////////////////
-
-		//////////////////////////
-		//PARTE 3: BINARIZACIÓN.//
-		//////////////////////////
-
-		//////////////////////////////////
-		//PARTE 4: ANALISIS PROPIEDADES.//
-		//////////////////////////////////
-
-		//////////////////////////////////
-		//PARTE 5: ESCRITURA RESULTADOS.//
-		//////////////////////////////////
+		////////////////////
+		//PIPE OUT SECTION//
+		////////////////////
 
 	}
 }//END MAIN

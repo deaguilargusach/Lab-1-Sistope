@@ -14,12 +14,12 @@
 
 int main (int argc, char **argv)
 {	
-	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
+	size_t fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
 	char path[30];
-	char uBin[30];
-	char UCla[30];
-	char muestreo[2];
+	char* uBin=(char*)malloc(sizeof(char)*15);
+	char* UCla=(char*)malloc(sizeof(char)*15);
+    char* muestreo=(char*)malloc(sizeof(char)*2);
 	unsigned char *img;
 	int imgWidth;
 	int imgHeight;
@@ -38,6 +38,7 @@ int main (int argc, char **argv)
 	char buffer1[100];
 	char buffer2[100];
 	char buffer3[100];
+	printf("HIJO 1 STDIN: %d\n", STDIN_FILENO);
 	read(STDIN_FILENO,numero,1);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer, aux2[0]);//Lectura del path
@@ -76,6 +77,7 @@ int main (int argc, char **argv)
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//Se relee la imagen con el tamaño del archivo definido.
 	printf("Tamano del archivo: %ld\n", fileSize);
+	close(file);
 
 	////////////////////
 	//PIPE OUT SECTION//
@@ -83,7 +85,7 @@ int main (int argc, char **argv)
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;
-	printf("Creando hijo\n");
+	printf("Creando hijo\n\n\n");
 	pid = fork();// CREANDO HIJO
 	if(pid == 0)
 	{
@@ -95,18 +97,24 @@ int main (int argc, char **argv)
 	}
 	else
 	{
+		printf("pipefd's: 0: %d, 1: %d\n", pipefd[0], pipefd[1]);
 		//En esta sección el padre envía datos a cada hijo
-		write(pipefd[1],numero,1);
 		aux2[0]=fileSize;
-		write(pipefd[1], aux2, 1);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"
-		write(pipefd[1],img,fileSize);
+		write(pipefd[1], aux2, 2);//Se escriben en el pipe "filesize" de la memoria de la variable "aux2"
+
 		aux2[0]=strlen(UCla);
 		write(pipefd[1],aux2,1);
+		printf("Pasando UCLA: %s\n", UCla);
 		write(pipefd[1], UCla, strlen(UCla));
 		aux2[0]=strlen(uBin);
 		write(pipefd[1],aux2,1);
+		printf("Pasando UBin: %s\n", uBin);
 		write(pipefd[1], uBin, strlen(uBin));
-		write(pipefd[1], muestreo, 2);
+
+		write(pipefd[1], muestreo, 1);
+		printf("hola\n");
+
+		write(pipefd[1], img, fileSize);
 		waitpid(pid,&status,0);
 	}
 	////////////////////////

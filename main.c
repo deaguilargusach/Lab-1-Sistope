@@ -93,6 +93,7 @@ void main (int argc, char **argv)
 	//FIN DECLARACIÓN DE VARIABLES//
 	//inicio de bucle de ejecucion para las n imagenes {
 	while(aux <= atoi(cantidadImagenes)){
+		printf("VALOR DE UN INT%d \n", sizeof(size_t));
 		cantidadPixeles=0;
 		path[7]='\0';
 		bm[5]='\0';
@@ -105,13 +106,12 @@ void main (int argc, char **argv)
 		pipe(pipefd);
 		int pid;
 		aux ++;
-		printf("Creando hijo\n");
+		printf("Creando hijo\n\n\n");
 		pid = fork();// CREANDO HIJO
 		if(pid == 0)
 		{
-			printf("Soy el hijo...\n");
 			dup2(pipefd[0], STDIN_FILENO);//Se copia la sección de lectura del pipe a la constante STDIN_FILENO, de modo que el hijo pueda leer
-			close(pipefd[0]);
+			//close(pipefd[0]);
 			execl("lectorImagen", "ls","-al", NULL);
 	        perror("exec ls failed\n");
 	        exit(EXIT_FAILURE);
@@ -120,6 +120,8 @@ void main (int argc, char **argv)
 		{
 			//En esta sección el padre envía datos a cada hijo
 			//write(pipefd[1], "TE ENVIO ESTE MENSAJE CUALQUIERA", 33);// PRUEBA DE QUE FUNCIONA
+			printf("pipefd's: 0: %d, 1: %d\n", pipefd[0], pipefd[1]);
+			//close(pipefd[0]);
 			tamaniocosas[0]=aux;
 			write(pipefd[1],tamaniocosas,1);
 			tamaniocosas[0]=strlen(path);
@@ -132,6 +134,8 @@ void main (int argc, char **argv)
 			write(pipefd[1],tamaniocosas,1);
 			write(pipefd[1], umbralBinarizacion, strlen(umbralBinarizacion));
 			write(pipefd[1], flagMuestreo, 1);
+			close(pipefd[1]);
+			printf("PRRRRRRIMER PADRE !\n");
 			waitpid(pid,&status,0);
 		}
 		

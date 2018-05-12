@@ -101,5 +101,32 @@ imgStruct* imagenAbinario(imgStruct* img, int umbral){
 	for (i = 0; i <n ; i=i+1){
 		img->pixeles[i]=pixelAbinario(img->pixeles[i], umbral);
 	}
+void crearPipeSalida()
+{
+	////////////////////
+	//PIPE OUT SECTION//
+	////////////////////
+	int pipefd[2];
+	pipe(pipefd);
+	int pid;
+	long fileSize;
+	printf("Creando hijo\n");
+	pid = fork();// CREANDO HIJO
+	if(pid == 0)
+	{
+		dup2(pipefd[0], STDIN_FILENO);//EL OUT DE ESTE PIPE SERÁ FD1
+		close(pipefd[0]);
+		execl("lectorImagen", "ls","-al", NULL);
+        perror("exec ls failed\n");
+        exit(EXIT_FAILURE);
+	}
+	else
+	{
+		//En esta sección el padre envía datos a cada hijo
+	}
+	////////////////////////
+	//FIN PIPE OUT SECTION//
+	////////////////////////
+}
 }
 

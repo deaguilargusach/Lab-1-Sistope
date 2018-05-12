@@ -14,11 +14,11 @@
 
 int main (int argc, char **argv)
 {	
-	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
+	size_t fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
-	char uBin[30];
-	char UCla[30];
-	char muestreo[2];
+	char* uBin=(char*)malloc(sizeof(char)*15);
+	char* UCla=(char*)malloc(sizeof(char)*15);
+    char* muestreo=(char*)malloc(sizeof(char)*2);
 	unsigned char *img;
 	int imgWidth;
 	int imgHeight;
@@ -37,28 +37,31 @@ int main (int argc, char **argv)
 	char buffer1[100];
 	char buffer2[100];
 	char buffer3[100];
-	read(STDIN_FILENO,numero,1);
-	read(STDIN_FILENO,aux2,1);
-	unsigned char buffer[aux2[0]];
+
+	printf("HIJO 2 STDIN: %d\n", STDIN_FILENO);
+	read(STDIN_FILENO, aux2, 2);
 	fileSize=aux2[0];
+	unsigned char buffer[fileSize];
+	printf("fileSize: %zu\n", fileSize);
 	img = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
-	read(STDIN_FILENO, buffer, aux2[0]);//Lectura de la imagen
-	strcpy(img, buffer);
-	printf("imagen: %s\n", img);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer1, aux2[0]);
 	strcpy(UCla, buffer1);
-	UCla[aux2[0]]='\0';
+	//UCla[aux2[0]]='\0';
+	printf("COMPLETADO\n");
 	printf("UClasificacion: %s\n", UCla);
 	read(STDIN_FILENO,aux2,1);
 	read(STDIN_FILENO, buffer2, aux2[0]);
 	strcpy(uBin, buffer2);
-	uBin[aux2[0]]='\0';
+	//uBin[aux2[0]]='\0';
 	printf("UBinarizacion: %s\n", uBin);
 	read(STDIN_FILENO, buffer3, 1);
 	strcpy(muestreo, buffer3);
-	muestreo[2]='\0';
+	//muestreo[2]='\0';
 	printf("Flag: %s\n", muestreo);
+	read(STDIN_FILENO, img, fileSize);//Lectura de la imagen
+	//memcpy(img, buffer, fileSize);
+	printf("imagen: %u\n", img[2]);
 	///////////////////////
 	//FIN PIPE IN SECTION//
 	///////////////////////
@@ -73,11 +76,11 @@ int main (int argc, char **argv)
 	printf("Tamano del header: %d\n", headerSize);
 	printf("Ancho de la imagen: %d\n", imgWidth);
 	printf("Largo de la imagen: %d\n", imgHeight);
+	return 0;
 
 	////////////////////
 	//PIPE OUT SECTION//
 	////////////////////
-	return 0;
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;

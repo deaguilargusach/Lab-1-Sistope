@@ -27,12 +27,6 @@ int main (int argc, char **argv)
 	int aux;
 	unsigned char *img;
 
-	printf("\n\n\n##################################################################\n");
-	printf("##################################################################\n");
-	printf("############# CLASIFICADOR DE IMAGENES: BINARIZADOR ##############\n");
-	printf("##################################################################\n");
-	printf("##################################################################\n\n\n");
-
 	///////////////////
 	//PIPE IN SECTION//
 	///////////////////
@@ -42,32 +36,26 @@ int main (int argc, char **argv)
 	//LECTURA DE NUMERO DE IMAGEN
 	read(STDIN_FILENO, aux2, 1);
 	numero = aux2[0];
-	printf("Imagen #: %d\n", numero);
 
 	//LECTURA DEL TAMAÑO DE ARCHIVO
 	read(STDIN_FILENO, auxLong, 8);
 	fileSize=auxLong[0];
-	printf("Tamano del archivo: %zu\n", fileSize);
 
 	//LECTURA DEL UMBRAL DE CLASIFICACIÓN
 	read(STDIN_FILENO, aux2, 1);
 	UCla = aux2[0];
-	printf("Umbral de Clasificacion: %d\n", UCla);
 
 	//LECTURA DEL UMBRAL DE BINARIZACIÓN
 	read(STDIN_FILENO, aux2, 2);
 	UBin = aux2[0];
-	printf("Umbral de Binarizacion: %d\n", UBin);
 
 	//LECTURA DEL HEADERSIZE
 	read(STDIN_FILENO, aux2, 1);
 	headerSize = aux2[0];
-	printf("Tamano del Header: %d\n", headerSize);
 
 	//LECTURA DEL FLAG
 	read(STDIN_FILENO, aux2, 1);
 	muestreo = aux2[0];
-	printf("Bandera de muestreo: %d\n", muestreo);
 
 	//LECTURA DE LA IMAGEN
 	img = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
@@ -85,15 +73,21 @@ int main (int argc, char **argv)
 	{  
 		if(img[i] > UBin)
 		{
+			img[i]=255;
+			img[i+1]=255;
+			img[i+2]=255;
 			contadorBlanco += 1; // Si el pixel de escala de grises es mayor que el umbral, el pixel binarizado es 1.
 			//printf("binarizado!");
 		}
-		else contadorNegro += 1;//Sino, 0.
+		else {
+			img[i]=0;
+			img[i+1]=0;
+			img[i+2]=0;
+		contadorNegro += 1;}//Sino, 0.
 		i = i + 3;
+
 		//cantidadPixeles=cantidadPixeles+1;
 	}
-	printf("Cantidad de Negros: %d\n", contadorNegro);
-	printf("Cantidad de Blancos: %d\n", contadorBlanco);
 
 	////////////////////////////////////////////
 	//FIN EJECUCIÓN DEL PROCESO: BINARIZACION //
@@ -105,7 +99,6 @@ int main (int argc, char **argv)
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;
-	printf("Creando hijo...\n\n");
 	pid = fork();// CREANDO HIJO
 	if(pid == 0)
 	{

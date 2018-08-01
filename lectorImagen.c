@@ -29,12 +29,6 @@ int main (int argc, char **argv)
 	int status;
 	int numero;
 
-	printf("\n\n\n##################################################################\n");
-	printf("##################################################################\n");
-	printf("######### CLASIFICADOR DE IMAGENES: LECTOR DE IMAGENES ###########\n");
-	printf("##################################################################\n");
-	printf("##################################################################\n\n\n");
-
 	///////////////////
 	//PIPE IN SECTION//
 	///////////////////
@@ -44,7 +38,6 @@ int main (int argc, char **argv)
 	//LECTURA DE NUMERO DE IMAGEN
 	read(STDIN_FILENO, aux2, 1);
 	numero = aux2[0];
-	printf("Imagen #: %d\n", numero);
 
 	//LECTURA DE TAMAÑO DEL PATH
 	read(STDIN_FILENO,aux2,1);
@@ -53,23 +46,19 @@ int main (int argc, char **argv)
 	read(STDIN_FILENO, buffer, aux2[0]);
 	strcpy(path, buffer);
 	path[aux2[0]]='\0';
-	printf("Nombre de la imagen: %s\n", path);
+	
 
 	//LECTURA DEL UMBRAL DE CLASIFICACION
 	read(STDIN_FILENO, aux2, 1);
 	UCla = aux2[0];
-	printf("Umbral de Clasificacion: %d\n", UCla);
 
 	//LECTURA DEL UMBRAL DE BINARIZACION
 	read(STDIN_FILENO, aux2, 2);
 	UBin = aux2[0];
-	printf("Umbral de Binarizacion: %d\n", UBin);
 
 	//LECTURA DE LA FLAG
 	read(STDIN_FILENO, aux2, 1);
 	muestreo = aux2[0];
-	printf("Bandera de Muestreo: %d\n", muestreo);
-
 	///////////////////////
 	//FIN PIPE IN SECTION//
 	///////////////////////
@@ -83,17 +72,13 @@ int main (int argc, char **argv)
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//leerImagen devuelve un puntero a un array de unsigned char con los bytes de datos obtenidos de la imagen.
 	offset = img[10]*pow(256,0) + img[11]*pow(256,1) + img[12]*pow(256,2);
-	printf("Tamano del header: %d\n", offset);
 	imgWidth = img[18]*pow(256,0) + img[19]*pow(256,1) + img[20]*pow(256,2) + img[21]*pow(256,3);//Los bytes 19, 20, 21 y 22 contienen el ancho de la imagen.
-	printf("Ancho de la imagen: %d\n", imgWidth);
 	imgHeight = img[22]*pow(256,0) + img[23]*pow(256,1) + img[24]*pow(256,2) + img[25]*pow(256,3);//Los bytes 23, 24, 25 y 26 contienen el largo de la imagen.
-	printf("Largo de la imagen: %d\n", imgHeight);
 	headerSize = (int)img[2];//El tamaño del header esta escrito en el 3er byte de la data.
 	close(file);
 	fileSize = (imgWidth * imgHeight)*4 + headerSize;
 	file = abrirImagen(path);//Abrir archivo y obtener file descriptor.
 	img = leerImagen(file, fileSize);//Se relee la imagen con el tamaño del archivo definido.
-	printf("Tamano del archivo: %ld bytes\n", fileSize);
 	close(file);
 
 	////////////////////////////////////////////////
@@ -108,7 +93,6 @@ int main (int argc, char **argv)
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;
-	printf("Creando hijo...\n\n");
 	pid = fork();// CREANDO HIJO
 	if(pid == 0)//Esta condición se activa únicamente para el proceso hijo
 	{

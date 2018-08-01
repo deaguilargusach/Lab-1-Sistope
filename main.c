@@ -81,13 +81,7 @@ void main (int argc, char **argv)
                    optopt);
         }
       }
-  printf("\n\n\n##################################################################\n");
-  printf("##################################################################\n");
-  printf("############# CLASIFICADOR DE IMAGENES: MAIN #####################\n");
-  printf("##################################################################\n");
-  printf("##################################################################\n\n\n");
-  printf ("Cantidad de imagenes = %s\nUmbral de binarizacion = %s\nUmbral de clasificacion = %s\nBandera de muestreo = %s\n",
-          cantidadImagenes, umbralBinarizacion, umbralClasificacion, flagMuestreo);
+  
 
   for (index = optind; index < argc; index++)
     printf ("Non-option argument %s\n", argv[index]);
@@ -121,7 +115,6 @@ void main (int argc, char **argv)
 		sprintf(numero,"%d",aux);
 		strcat(path, numero);
 		strcat(path, bm);
-		printf("Cargando imagen: %s\n",path );
 		int status;
 
 	////////////////////////////////////
@@ -135,7 +128,6 @@ void main (int argc, char **argv)
 		int pipefd[2];
 		pipe(pipefd);
 		int pid;
-		printf("Creando hijo...\n\n");
 		pid = fork();// CREANDO HIJO
 		if(pid == 0)
 		{

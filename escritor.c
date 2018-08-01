@@ -28,11 +28,7 @@ int main (int argc, char **argv)
 	char* numeroChar=(char*)malloc(sizeof(char)*15);
 	int numero;
 
-	printf("\n\n\n##################################################################\n");
-	printf("##################################################################\n");
-	printf("############# CLASIFICADOR DE IMAGENES: ESCRITOR #################\n");
-	printf("##################################################################\n");
-	printf("##################################################################\n\n\n");
+
 
 	///////////////////
 	//PIPE IN SECTION//
@@ -41,12 +37,10 @@ int main (int argc, char **argv)
 	//LECTURA DE NUMERO DE IMAGEN
 	read(STDIN_FILENO, aux2, 1);
 	numero = aux2[0];
-	printf("Imagen #: %d\n", numero);
 
 	//LECTURA DEL TAMAÑO DE ARCHIVO
 	read(STDIN_FILENO, auxLong, 8);
 	fileSize = auxLong[0];
-	printf("Tamano del archivo: %zu bytes\n", fileSize);
 
 	//LECTURA DEL CONTADOR DE BLANCOS
 	read(STDIN_FILENO, auxLong, 8);
@@ -59,7 +53,6 @@ int main (int argc, char **argv)
 	//LECTURA DEL UMBRAL DE CLASIFICACIÓN
 	read(STDIN_FILENO, aux2, 1);
 	UCla = aux2[0];
-	printf("Umbral de Clasificacion: %d\n", UCla);
 
 	//LECTURA DEL HEADERSIZE
 	read(STDIN_FILENO, aux2, 1);
@@ -68,7 +61,6 @@ int main (int argc, char **argv)
 	//LECTURA DEL FLAG
 	read(STDIN_FILENO, aux2, 1);
 	muestreo = aux2[0];
-	printf("Bandera de muestreo: %d\n", muestreo);
 
 	//LECTURA DE LA IMAGEN
 	img = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
@@ -92,14 +84,13 @@ int main (int argc, char **argv)
 	strcat(path2, numeroChar);
 	strcat(path2, bm);
 	
-	printf("Nombre del archivo de salida: %s\n",path2 );
 	outfile=crearSalida(path2);
 	int counter = 1;
 	for (i = 0; i < fileSize; i=i+1){	
 		escrito[0]=img[i];
 		if(i == fileSize/10*counter)
 		{
-			printf("---> %d/100...\n", counter*10);
+			
 			counter = counter + 1;
 		}
 		write(outfile,escrito,sizeof(unsigned char));
@@ -116,7 +107,7 @@ int main (int argc, char **argv)
 	int pipefd[2];
 	pipe(pipefd);
 	int pid;
-	printf("Creando hijo\n");
+	
 	pid = fork();// CREANDO HIJO
 	if(pid == 0)
 	{

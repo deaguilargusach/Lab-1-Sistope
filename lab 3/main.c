@@ -10,9 +10,6 @@
 #include "functions.c"
 #include <math.h>
 
-
-
-
 void main (int argc, char **argv)
 {
   int index;
@@ -63,12 +60,12 @@ void main (int argc, char **argv)
         }
       }
 
-  printf ("Cantidad de imagenes = %d\nUmbral de binarizacion = %d\nUmbral de clasificacion = %d\nBandera de muestreo = %d\n",
+    printf ("Cantidad de imagenes = %d\nUmbral de binarizacion = %d\nUmbral de clasificacion = %d\nBandera de muestreo = %d\n",
           cantidadImagenes, umbralBinarizacion, umbralClasificacion, flagMuestreo);
-  printf("cantidadHebras: ");
-  printf("%d\n", cantidadHebras );
-  for (index = optind; index < argc; index++)
-    printf ("Non-option argument %s\n", argv[index]);
+    printf("cantidadHebras: ");
+    printf("%d\n", cantidadHebras );
+    for (index = optind; index < argc; index++)
+    	printf ("Non-option argument %s\n", argv[index]);
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////FIN LECTURA DE PARÁMETROS///////////////////////////////////////////////
@@ -96,7 +93,6 @@ void main (int argc, char **argv)
 	}
 	pthread_t* hebras=(pthread_t*)malloc(sizeof(pthread_t)*cantidadHebras);
 	pthread_barrier_init(&mybarrier,NULL,cantidadHebras);
-
 
 	//FIN DECLARACIÓN DE VARIABLES//
 	//inicio de bucle de ejecucion para las n imagenes {
@@ -159,20 +155,17 @@ void main (int argc, char **argv)
 			img=(unsigned char*)imghebra;
 		}
 
-		/////////////////////////////////////////////////////////
-		//INICIO PIPELINE DE LECTURA, CONVERSION Y BINARIZACION//
-		/////////////////////////////////////////////////////////
-
 		cantidadPixeles = fileSize/4;
 		if(flagMuestreo==1){
-		if(black/cantidadPixeles * 100 >= umbralClasificacion) clasificador = 1;
-		else clasificador = 0;
-		if(clasificador == 1) printf("\n---> La imagen %d es nearly black <---\n\n", aux);
-		else printf("\n---> La imagen %d no es nearly black <---\n\n", aux);
-	}
-	
-	//printf("Tamano del archivo: %ld\n", fileSize);
-
+			if(black/cantidadPixeles * 100 >= umbralClasificacion)
+				clasificador = 1;
+			else
+				clasificador = 0;
+			if(clasificador == 1)
+				printf("\n---> La imagen %d es nearly black <---\n\n", aux);
+			else
+				printf("\n---> La imagen %d no es nearly black <---\n\n", aux);
+		}
 	//////////////////////////////////////////////////////
 	//FIN PIPELINE DE LECTURA, CONVERSION Y BINARIZACION//
 	//////////////////////////////////////////////////////
@@ -189,34 +182,10 @@ void main (int argc, char **argv)
 			if(i == fileSize/10*counter){
 				counter = counter + 1;
 			}
-		write(outfile,escrito,sizeof(unsigned char));
+			write(outfile,escrito,sizeof(unsigned char));
 		}
 		lseek(outfile,offset,SEEK_SET);
-
 		close(outfile);
 		aux=aux+1;
-
 	}
-
 }//END MAIN
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

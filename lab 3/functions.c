@@ -1,6 +1,3 @@
-//Descripción:
-//Entrada:
-//Salida:
 pthread_barrier_t mybarrier;
 pthread_mutex_t lock;
 float white;
@@ -8,6 +5,9 @@ float black;
 int cantidadHebras;
 int umbralBinarizacion;
 int umbralClasificacion;
+//Descripción: Función que lee un descriptor de archivo retorna los datos correspondientes a la imagen leída
+//Entrada: (INT)Descriptor de archivo, (LONG) tamaño del archivo
+//Salida:
 unsigned char * leerImagen(int fileDescriptor, long fileSize)
 {
 	unsigned char * data = (unsigned char*)malloc(sizeof(unsigned char)*fileSize);
@@ -15,6 +15,9 @@ unsigned char * leerImagen(int fileDescriptor, long fileSize)
 	int numberOfBytes = read(fileDescriptor, data, fileSize);//Número de bytes. Función guarda datos en data.
 	return data;
 }
+//Descripción: Función utilizada para abrir imágenes y obtener sus características
+//Entrada: Nombre del
+//Salida:
 void * leerImagenHebras(void* entrada){
 	char* path=(char*) entrada;
 	unsigned char *img;
@@ -40,8 +43,8 @@ void * leerImagenHebras(void* entrada){
 	data=leerImagen(file,fileSize);
 	entrada=(void*) data;
 	return (void*) data;
-
 }
+//Descripción: Función ejecutada por hebras que se ocupan de convertir la imágen a escala de grises
 void * hebrasgris(void* entrada){
 	unsigned char* img=(unsigned char*) entrada;
 	int offset = img[10]*pow(256,0) + img[11]*pow(256,1) + img[12]*pow(256,2);
@@ -87,14 +90,12 @@ void * hebrasgris(void* entrada){
 		img[i]=Y;// Pixel Azul
 		img[i+1]=Y;// Pixel Verde
 		img[i+2]=Y;
-
 		i = i + 3;
 	}
 	//pthread_barrier_wait(&mybarrier)
 	return (void*) img;
-
-
 }
+//Descripción:Función ejecutada por hebras que se ocupan de binarizar la imágen
 void * hebrasbinario(void* entrada){
 	unsigned char* img=(unsigned char*) entrada;
 	int offset = img[10]*pow(256,0) + img[11]*pow(256,1) + img[12]*pow(256,2);
@@ -148,8 +149,6 @@ void * hebrasbinario(void* entrada){
 	pthread_mutex_unlock(&lock);
 	//pthread_barrier_wait(&mybarrier);
 	return (void*) img;
-
-
 }
 int abrirImagen(char * path)
 {
@@ -158,16 +157,6 @@ int abrirImagen(char * path)
 }
 int crearSalida(char* path){
 
-	int fileDescriptor = open(path, O_CREAT|O_WRONLY, S_IRWXU);;
+	int fileDescriptor = open(path, O_CREAT|O_WRONLY, S_IRWXU);
 	return fileDescriptor;
 }
-
-//Descripción:
-//Entrada:
-//Salida:
-
-//Descripción:
-//Entrada:
-//Salida:
-
-

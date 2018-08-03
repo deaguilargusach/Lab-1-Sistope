@@ -23,8 +23,6 @@ void * leerImagenHebras(void* entrada){
 	unsigned char *img;
 	long fileSize;//Tamaño del archivo determinado por (ancho*largo)*4 + tamaño del header.
 	int file;
-	int offset;
-	int clasificador;
 	int cantidadPixeles;
 	int imgWidth;
 	int imgHeight;
@@ -103,8 +101,6 @@ void * hebrasbinario(void* entrada){
 	int imgHeight = img[22]*pow(256,0) + img[23]*pow(256,1) + img[24]*pow(256,2) + img[25]*pow(256,3);//Los bytes 23, 24, 25 y 26 contienen el largo de la imagen.
 	int headerSize = (int)img[2];//El tamaño del header esta escrito en el 3er byte de la data.
 	int fileSize = (imgWidth * imgHeight)*4 + headerSize;
-	int R;
-	int Y;
 	int i;
 	int numerohebra=img[fileSize];
 	int aux1=2;
